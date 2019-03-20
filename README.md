@@ -1,11 +1,22 @@
 # Insight Data Engineering Project
 
 ## Description
-Condense your company's data into a one page consumable report
+Condense your company's data into a one page executive summary
 
-## Dashboard
+## Result
 
-## Workflow
+## How does it work? 
+![A test image](testing.png)
 
 ## Architecture
+
+## Engineering challenges 
+- Ingesting from one or more data sources 
+- Creating a system that is fault tolerant as data scales 
+
+## MVP
+Ingest multiple data sources and generate a one page executive summary
+
+## Stretch goals 
+
 
