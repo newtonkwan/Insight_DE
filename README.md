@@ -16,7 +16,7 @@ This project is inspired by local Seattle company, Textio -- a company focused o
 ## Project description 
 I will store research papers from Semantic scholar and arXiv [total 250 GB] into AWS S3. I will join the two data sets using Spark and extract the abstract and number of citations. 
 
-For the top 10 papers, I will then compare each abstract to each of the others [O(n!)] through the Levenshtein distance. This method was invented in 1965 by the Russian Mathematician Vladimir Levenshtein (1935-2017). The distance value describes the minimal number of deletions, insertions, or substitutions that are required to transform one string (the source) into another (the target). 
+For the top 10,000 papers, I will then compare each abstract to each of the others [O(n!)] through the Levenshtein distance by domain. This method was invented in 1965 by the Russian Mathematician Vladimir Levenshtein (1935-2017). The distance value describes the minimal number of deletions, insertions, or substitutions that are required to transform one string (the source) into another (the target). 
 
 Ex. Levenshtein distance of "test" to "text" is 1 (one substitution). 
 
@@ -27,7 +27,7 @@ When new research papers come in, I will use Kafka and Spark Streaming (not comp
 ## Tech Stack
 ![Tech Stack](workflow.jpeg)
 - AWS S3 [Storing Open Research Corpus and arXiv data]
-- Kafka [Ingesting new data]
+- Kafka [Ingesting data from Open Research Corps; arXiv already in S3]
 - Spark [Batch Processing on historic data]
 - Spark Streaming [Stream Processing on new data]
 - Redis (or ElasticSearch) [Database; good for storing and searching text data]
@@ -41,17 +41,18 @@ When new research papers come in, I will use Kafka and Spark Streaming (not comp
 - Combining two or more large data sets (>50 GB)
 - Extracting the abstract and number of citations from each paper
 - Streaming data when new papers come in [updated monthly in ArXiv]
-- Computing the similarity quickly
+- Computing the similarity 
 
 ## Business Value
 There are many use cases. For example, Textio is a Seattle company focused on augmented writing for job descriptions. New job postings are put up every day on Indeed, LinkedIn, Glassdoor, etc. How do you write a good job description so that you have a higher probability of getting good talent? I have created a pipeline that can take historic data and do real time streaming on these postings. The pipeline will allow data scientists and ML engineers to easily access the data and test their models on what job descriptions work well and ultimately provide insight into how a company would write a good job postings. Other use cases include ingesting text-based data like real-time Amazon reviews, traffic updates, and news articles for a wide range of purposes. 
 
 ## MVP
-Join the two datasets together, extract the top 10 abstracts along with their citations, and compute the Levenshtein distances. 
+Join the two datasets together, extract the top 1,000 abstracts along with their citations, and compute the Levenshtein distances. 
 
 ## Stretch Goals
 - Add more research papers
 - Categorize research papers by domain (Ex. CS, Biomedical, Neuroscience)
+- Categorize research papers by year (Ex. 1987, 1999, 2018)
 - Validate and implement a more sophisticated similarity system [Jaccard index, Sorensen-Dice, Ratcliff-Obershelp similarity]
 - Display top abstracts by domain
 - Compute similarity by domain
