@@ -6,7 +6,7 @@ Condense your company's data into a one page executive summary
 ## Result
 
 ## How does it work? 
-![A test image](One_ex.pdf)
+![A test image](one_ex.png)
 
 ## Architecture
 
