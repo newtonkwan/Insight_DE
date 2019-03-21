@@ -5,7 +5,7 @@ Words move people.
 ## Motivation 
 The right words make all the difference.
 
-Great Work is a text-based similarity pipeline for 45 million academic research papers that presents abstracts with the highest citations and tests their similarity using a the Levenshtein distance so you can answer questions such as: 
+Great Work is a text-based similarity pipeline for 45 million academic research papers that presents abstracts with the highest citations and tests their similarity using a the Levenshtein distance to answer questions such as: 
 
 1) What do abstracts from the best papers look like? 
 2) How can I write my abstract so more people will read my paper? 
