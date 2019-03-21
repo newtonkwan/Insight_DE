@@ -14,6 +14,8 @@ Imagine you are a Seattle housing company and want to find out what kind of data
 2) Basic information about your data. Ex. no. of houses = 123, no. of apartments = 231
 3) Basic statistics about your data. Ex. no. of tenants by month = 95
 
+The executive summary will allow you to now tell us what you'd like us to do when proceeding 
+
 ## Architecture
 
 ## Engineering challenges 
