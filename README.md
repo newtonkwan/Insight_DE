@@ -25,13 +25,15 @@ This calculation provides information on the similarity of abstracts. If the abs
 When new research papers come in, I will use Spark Streaming. (not completely necessary for this project since arXiv only updates monthly, but will be crucial for companies that get new data daily or instantly) 
 
 ## Tech Stack
+![Tech Stack](workflow.jpeg)
+Credit: /kellielu
+
 - AWS S3 [Storing the data]
 - Kafka [Ingesting]
 - Spark [Batch Processing]
 - Spark Streaming [Stream Processing]
 - Redis (or ElasticSearch) [Database; good for storing and searching text data]
 - Flask [Web; seems like the simplest to use]
-![Tech Stack](workflow.jpeg)
 
 ## Data Source
 - Semantic Scholar: CS, Neuroscience, biomedical [46GB] [direct download] [.txt files] 
