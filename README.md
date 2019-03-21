@@ -44,7 +44,7 @@ When new research papers come in, I will use Spark Streaming. (not completely ne
 - Computing the similarity rating quickly
 
 ## Business Value
-There are many use cases. For example, Textio is a Seattle company focused on augmented writing for job descriptions: how do you write a good job description so that you have a higher probability of getting good talent? New job postings are put up every day on Indeed, LinkedIn, Glassdoor, etc., so you need real time streaming and the pipeline to get it to your data scientist. You may be provided other analytics like the number of people applying, what kinds of people are applying, how many clicks they're getting -- all of which the data scientist could use to fine tune his or her model. 
+There are many use cases. For example, Textio is a Seattle company focused on augmented writing for job descriptions: how do you write a good job description so that you have a higher probability of getting good talent? New job postings are put up every day on Indeed, LinkedIn, Glassdoor, etc., so you need a pipeline that can take historic data and do real time streaming on all these postings. The pipeline allows the data scientist and machine learning engineers to easily access the data and test their models on what job descriptions work well. Other use cases include ingesting text-based data like real-time Amazon reviews, traffic updates, and news articles. 
 
 ## MVP
 Join the two datasets together, extract the top 10 abstracts along with their citations, and compute the Levenshtein distances. 
