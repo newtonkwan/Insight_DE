@@ -16,7 +16,7 @@ This project is inspired by local Seattle company, Textio -- a company focused o
 ## Project description 
 I will store research papers from Semantic scholar and arXiv [total 250 GB] into AWS S3. I will join the two data sets using Spark and extract the abstract and number of citations. 
 
-For the top 10,000 papers, I will then compare each abstract to each of the others [O(n!)] through the Levenshtein distance by domain. This method was invented in 1965 by the Russian Mathematician Vladimir Levenshtein (1935-2017). The distance value describes the minimal number of deletions, insertions, or substitutions that are required to transform one string (the source) into another (the target). 
+For the top 150,000 papers (3 categories, 1% of each), I will then compare each abstract to each of the others [O(n!)] through the Levenshtein distance by domain. This method was invented in 1965 by the Russian Mathematician Vladimir Levenshtein (1935-2017). The distance value describes the minimal number of deletions, insertions, or substitutions that are required to transform one string (the source) into another (the target). 
 
 Ex. Levenshtein distance of "test" to "text" is 1 (one substitution). 
 
@@ -47,7 +47,7 @@ When new research papers come in, I will use Kafka and Spark Streaming (not comp
 There are many use cases. For example, Textio is a Seattle company focused on augmented writing for job descriptions. New job postings are put up every day on Indeed, LinkedIn, Glassdoor, etc. How do you write a good job description so that you have a higher probability of getting good talent? I have created a pipeline that can take historic data and do real time streaming on these postings. The pipeline will allow data scientists and ML engineers to easily access the data and test their models on what job descriptions work well and ultimately provide insight into how a company would write a good job postings. Other use cases include ingesting text-based data like real-time Amazon reviews, traffic updates, and news articles for a wide range of purposes. 
 
 ## MVP
-Join the two datasets together, extract the top 1,000 abstracts along with their citations, and compute the Levenshtein distances. 
+Join the two datasets together, extract the top 5,000 abstracts (< 0.01%) along with their citations, and compute the Levenshtein distances. 
 
 ## Stretch Goals
 - Add more research papers
