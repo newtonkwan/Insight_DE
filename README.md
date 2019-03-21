@@ -49,10 +49,13 @@ There are many use cases. For example, Textio is a Seattle company focused on au
 Join the two datasets together, extract the top 10 abstracts along with their citations, and compute the Levenshtein distances. 
 
 ## Stretch Goals
-Add more research papers
-Validate and implement a more sophisticated similarity system [Jaccard index, Sorensen-Dice, Ratcliff-Obershelp similarity
-Store abstracts by field and display top 5 abstracts for each field 
-Compute Levenshtein distance for abstracts within the same category (Ex. CS, Biomedical, Neuroscience)
+- Add more research papers
+- Categorize research papers by domain (Ex. CS, Biomedical, Neuroscience)
+- Validate and implement a more sophisticated similarity system [Jaccard index, Sorensen-Dice, Ratcliff-Obershelp similarity]
+- Display top abstracts by domain
+- Compute similarity by domain
+- Increase the number of abstracts that can be compared efficiently 
+
 
 ## Appendix 
 - Jaccard index: Find the number of common tokens and divide it by the total number of unique tokens
