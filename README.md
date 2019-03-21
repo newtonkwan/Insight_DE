@@ -6,7 +6,7 @@ Condense your company's data into a one page executive summary
 ## Result
 
 ## How does it work? 
-![A test image](testing.png)
+![A test image](One_ex.pdf)
 
 ## Architecture
 
@@ -18,5 +18,7 @@ Condense your company's data into a one page executive summary
 Ingest multiple data sources and generate a one page executive summary
 
 ## Stretch goals 
+- Allow for larger data sources
+- Allow user to choose which parts they want to include in the executive summary
 
 
