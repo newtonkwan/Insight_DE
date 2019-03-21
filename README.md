@@ -16,7 +16,7 @@ This project is inspired by local Seattle company, Textio -- a company focused o
 ## Project description 
 I will store research papers from Semantic scholar and arXiv [total 250 GB] into AWS S3. I will join the two data sets using Spark and extract the abstract and number of citations. 
 
-For the top 10 papers, I will then compare each abstract to each of the others O(n!) through the Levenshtein distance. This method was invented in 1965 by the Russian Mathematician Vladimir Levenshtein (1935-2017). The distance value describes the minimal number of deletions, insertions, or substitutions that are required to transform one string (the source) into another (the target). 
+For the top 10 papers, I will then compare each abstract to each of the others [O(n!)] through the Levenshtein distance. This method was invented in 1965 by the Russian Mathematician Vladimir Levenshtein (1935-2017). The distance value describes the minimal number of deletions, insertions, or substitutions that are required to transform one string (the source) into another (the target). 
 
 Ex. Levenshtein distance of "test" to "text" is 1 (one substitution). 
 
@@ -41,6 +41,7 @@ When new research papers come in, I will use Spark Streaming. (not completely ne
 - Combining two or more large data sets 
 - Extracting the abstract and number of citations from each paper
 - Streaming data when new papers come in [updated monthly in ArXiv]
+- Computing the similarity rating quickly
 
 ## Business Value
 There are many use cases. For example, Textio is a Seattle company focused on augmented writing for job descriptions: how do you write a good job description so that you have a higher probability of getting good talent? New job postings are put up every day on Indeed, LinkedIn, Glassdoor, etc., so you need real time streaming and the pipeline to get it to your data scientist. You may be provided other analytics like the number of people applying, what kinds of people are applying, how many clicks they're getting -- all of which the data scientist could use to fine tune his or her model. 
@@ -54,7 +55,7 @@ Join the two datasets together, extract the top 10 abstracts along with their ci
 - Validate and implement a more sophisticated similarity system [Jaccard index, Sorensen-Dice, Ratcliff-Obershelp similarity]
 - Display top abstracts by domain
 - Compute similarity by domain
-- Increase the number of abstracts that can be compared efficiently 
+- Scale the number of abstracts that can be compared efficiently 
 
 
 ## Appendix 
