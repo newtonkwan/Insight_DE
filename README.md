@@ -22,29 +22,29 @@ Ex. Levenshtein distance of "test" to "text" is 1 (one substitution).
 
 This calculation provides information on the similarity of abstracts. If the abstracts are similar, abstracts could be a good indicator of number of citations. If they're not very similar, then a) maybe abstracts aren't a good indicator for citations; b) the domains of the papers are not similar enough; c) the similarity algorithm is not good enough. 
 
-When new research papers come in, I will use Spark Streaming. (not completely necessary for this project since arXiv only updates monthly, but will be crucial for companies that get new data daily or instantly) 
+When new research papers come in, I will use Kafka and Spark Streaming (not completely necessary for this project since arXiv only updates monthly, but will be crucial for companies that get new data daily or instantly) 
 
 ## Tech Stack
 ![Tech Stack](workflow.jpeg)
-- AWS S3 [Storing the data]
-- Kafka [Ingesting]
-- Spark [Batch Processing]
-- Spark Streaming [Stream Processing]
+- AWS S3 [Storing Open Research Corpus and arXiv data]
+- Kafka [Ingesting new data]
+- Spark [Batch Processing on historic data]
+- Spark Streaming [Stream Processing on new data]
 - Redis (or ElasticSearch) [Database; good for storing and searching text data]
 - Flask [Web; seems like the simplest to use]
 
 ## Data Source
-- Semantic Scholar: CS, Neuroscience, biomedical [46GB] [direct download] [.txt files] 
+- Open Research Corpus: CS, Neuroscience, Biomedical [46GB] [direct download] [.txt files] 
 - arXiv [190GB] [Amazon S3] [source files in TeX/LaTeX]
 
 ## Engineering Challenge
-- Combining two or more large data sets 
+- Combining two or more large data sets (>50 GB)
 - Extracting the abstract and number of citations from each paper
 - Streaming data when new papers come in [updated monthly in ArXiv]
-- Computing the similarity rating quickly
+- Computing the similarity quickly
 
 ## Business Value
-There are many use cases. For example, Textio is a Seattle company focused on augmented writing for job descriptions: how do you write a good job description so that you have a higher probability of getting good talent? New job postings are put up every day on Indeed, LinkedIn, Glassdoor, etc., so you need a pipeline that can take historic data and do real time streaming on all these postings. The pipeline allows the data scientist and machine learning engineers to easily access the data and test their models on what job descriptions work well. Other use cases include ingesting text-based data like real-time Amazon reviews, traffic updates, and news articles. 
+There are many use cases. For example, Textio is a Seattle company focused on augmented writing for job descriptions. New job postings are put up every day on Indeed, LinkedIn, Glassdoor, etc. How do you write a good job description so that you have a higher probability of getting good talent? I have created a pipeline that can take historic data and do real time streaming on these postings. The pipeline will allow data scientists and ML engineers to easily access the data and test their models on what job descriptions work well and ultimately provide insight into how a company would write a good job postings. Other use cases include ingesting text-based data like real-time Amazon reviews, traffic updates, and news articles for a wide range of purposes. 
 
 ## MVP
 Join the two datasets together, extract the top 10 abstracts along with their citations, and compute the Levenshtein distances. 
