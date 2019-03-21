@@ -64,7 +64,7 @@ Join the two datasets together, extract the top 10 abstracts along with their ci
 - Ratcliff-Obershelp similarity: Find the longest common substring from the two strings. Remove that part from both strings, and split at the same location. This breaks the strings into two parts, one left and another to the right of the found common substring. Now take the left part of both strings and call the function again to find the longest common substring. Do this too for the right part. This process is repeated recursively until the size of any broken part is less than a default value. Finally, a formulation similar to the above-mentioned dice is followed to compute the similarity score. The score is twice the number of characters found in common divided by the total number of characters in the two strings
 
 ## Credit 
-Tech Stack Picture credit: /kellielu
+Tech Stack Picture credit: kellielu
 
 
 
