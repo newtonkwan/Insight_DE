@@ -26,11 +26,12 @@ When new research papers come in, I will use Spark Streaming. (not completely ne
 
 ## Tech Stack
 - AWS S3 [Storing the data]
-- Kafka [Ingestion]
+- Kafka [Ingesting]
 - Spark [Batch Processing]
 - Spark Streaming [Stream Processing]
 - Redis (or ElasticSearch) [Database; good for storing and searching text data]
 - Flask [Web; seems like the simplest to use]
+![Tech Stack](workflow.jpeg)
 
 ## Data Source
 - Semantic Scholar: CS, Neuroscience, biomedical [46GB] [direct download] [.txt files] 
