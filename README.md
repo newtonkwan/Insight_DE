@@ -26,7 +26,7 @@ When new research papers come in, I will use Spark Streaming. (not completely ne
 
 ## Tech Stack
 ![Tech Stack](workflow.jpeg)
-Credit: /kellielu
+- Credit: /kellielu
 
 - AWS S3 [Storing the data]
 - Kafka [Ingesting]
