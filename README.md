@@ -3,20 +3,22 @@
 Words move people. 
 
 ## Motivation 
-The right words make all the difference.
+The right words make all the difference. Your paper's abstract or summary is the gateway to your work; it likely the single largest deciding factor in whether a reader will continue to read your paper. 
 
-Velma is a text-based similarity pipeline for 45 million academic research papers that presents abstracts with the highest citations and tests their similarity using the Levenshtein distance to answer questions such as: 
+Velma is a text-based similarity pipeline for 45 million academic research papers that provides the best example of abstracts based on: 
 
-1) What do abstracts from the best papers look like? 
-2) How can I write my abstract so more people will read my paper? 
-3) What are the historical trends of the abstracts from the best papers? 
+1) Number of citations 
+2) Year 
+3) Similarity to abstracts from other top papers in your field 
 
-This project is inspired by local Seattle company, Textio -- a company focused on augmented writing for job descriptions. 
+We believe in learning by example. Velma will provide you with real abstracts from top papers so you can learn from the best. If you've convinced your reader to continue past the abstract, our work is done and yours is just getting started. 
 
 ## Project description 
-I will store research papers from Semantic scholar and arXiv [total 250 GB] into AWS S3. I will join the two data sets using Spark and extract the abstract and number of citations. 
+Velma is a data pipeline with batch processing and real-time streaming capabilities. 
 
-For the top 150,000 papers (3 categories, 1% of each), I will then compare each abstract to each of the others [O(n!)] through the Levenshtein distance by domain. This method was invented in 1965 by the Russian Mathematician Vladimir Levenshtein (1935-2017). The distance value describes the minimal number of deletions, insertions, or substitutions that are required to transform one string (the source) into another (the target). 
+Papers are collected from the Open Research Corpus and arXiv (~45 million, ~250 GB) and stored in AWS S3. The data sets are joined, abstracts are connected to their year and number of citations, and the abstracts are sorted -- all using Spark. 
+
+For the top 150,000 papers (3 categories, 1% of each), I will then compare each abstract to each of the others [O(n!)] through the Levenshtein distance by domain. The distance value describes the minimal number of deletions, insertions, or substitutions that are required to transform one string (the source) into another (the target). 
 
 Ex. Levenshtein distance of "test" to "text" is 1 (one substitution). 
 
@@ -60,7 +62,7 @@ Join the two datasets together, extract the top 5,000 abstracts (< 0.01%) along 
 
 
 ## Appendix 
-- Jaccard index: Find the number of common tokens and divide it by the total number of unique tokens
+- Jaccard index: the size of the intersection divided by the size of the union of two label sets
 - Sorensen-Dice: Find the common tokens, and divide it by the total number of tokens present by combining both sets
 - Ratcliff-Obershelp similarity: Find the longest common substring from the two strings. Remove that part from both strings, and split at the same location. This breaks the strings into two parts, one left and another to the right of the found common substring. Now take the left part of both strings and call the function again to find the longest common substring. Do this too for the right part. This process is repeated recursively until the size of any broken part is less than a default value. Finally, a formulation similar to the above-mentioned dice is followed to compute the similarity score. The score is twice the number of characters found in common divided by the total number of characters in the two strings. 
 
