@@ -29,7 +29,7 @@ We store all of our data in Redis, which is great for text-based queries. To dis
 
 ## Tech Stack
 
-![Alt text](./workflow.jpeg)
+![Alt text](./Tech_Stack.png)
 - AWS S3 [Storing Open Research Corpus and arXiv data]
 - Spark [Batch Processing on data already stored in S3]
 - Kafka [Ingesting new data from Open Research Corps; arXiv already in S3]
