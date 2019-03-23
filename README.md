@@ -63,6 +63,7 @@ Move the Open Research Corpus and arXiv to S3, join the two datasets, map the ab
 - Sorensen-Dice: Find the common tokens, and divide it by the total number of tokens present by combining both sets
 - Ratcliff-Obershelp similarity: Find the longest common substring from the two strings. Remove that part from both strings, and split at the same location. This breaks the strings into two parts, one left and another to the right of the found common substring. Now take the left part of both strings and call the function again to find the longest common substring. Do this too for the right part. This process is repeated recursively until the size of any broken part is less than a default value. Finally, a formulation similar to the above-mentioned dice is followed to compute the similarity score. The score is twice the number of characters found in common divided by the total number of characters in the two strings. 
 
-## Credits
-Tech Stack Picture: kellielu; Appendix info: "String similarity — the basic know your algorithms guide!" by Mohit Mayank, itnext. Feb. 2, 2019.
+## Credits 
+Special thanks to Sriram, Curtis, Hoa, the rest of Insight Data Science. 
+
 
