@@ -11,7 +11,7 @@ Velma is a pipeline for 45 million academic research papers that provides the be
 2) Year 
 3) Similarity to abstracts from other top papers in your field 
 
-We believe in learning by example. If you've convinced your reader to continue past the abstract, our work is done and yours is just starting.  
+We believe in learning by example. If you've convinced your reader to continue past the abstract, our work is done and yours is just getting started.  
 
 ## Project description 
 We use a lot of papers. Papers are collected from the Open Research Corpus and arXiv (~45 million, ~250 GB) from three main categories -- CS, neuroscience, biomedical -- and stored in AWS S3. The data sets are joined, abstracts are connected to their year and number of citations, and then sorted -- all using Spark. We consider a good paper one that has a high number of citations within its field. 
