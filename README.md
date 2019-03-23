@@ -3,7 +3,7 @@
 Words move people. 
 
 ## Motivation 
-The right words make all the difference. Your paper's abstract or summary is the gateway to your work; it likely the single largest deciding factor in whether a reader will continue to read your paper. 
+The right words make all the difference. Your paper's abstract or summary is the gateway to your work; it likely the single largest deciding factor in whether a reader will continue to read your paper. We believe in learning by example. 
 
 Velma is a pipeline for 45 million academic research papers that provides the best example of abstracts based on: 
 
@@ -11,7 +11,7 @@ Velma is a pipeline for 45 million academic research papers that provides the be
 2) Year 
 3) Similarity to abstracts from other top papers in your field 
 
-We believe in learning by example. Velma will provide you with real abstracts from top papers so you can learn from the best. If you've convinced your reader to continue past the abstract, our work is done and yours is just starting.  
+If you've convinced your reader to continue past the abstract, our work is done and yours is just starting.  
 
 ## Project description 
 We use a lot of papers. Papers are collected from the Open Research Corpus and arXiv (~45 million, ~250 GB) from three main categories -- CS, neuroscience, biomedical -- and stored in AWS S3. The data sets are joined, abstracts are connected to their year and number of citations, and then sorted -- all using Spark. We consider a good paper one that has a high number of citations within its field. 
@@ -19,7 +19,6 @@ We use a lot of papers. Papers are collected from the Open Research Corpus and a
 Most top papers have good abstracts. However, some papers are good in spite of bad abstracts. We want to provide abstract formats that are tried and true. Velma will take the top 10,000 papers from the last 5 years and compare them to one another through the Jiccard Index, providing a measure word choice similarity. 
 
 ![Alt text](./jaccard_index.png)
-$$ \text{Jiccard Index} = \frac{\text{the # of words shared by two abstracts}}{\text{the # of words in the union of the two abstracts}}$$ 
 
 Use the right words with confidence. Velma will provide abstracts using the common language of your field, so you can be confident in the words you use. 
 
