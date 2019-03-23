@@ -48,9 +48,11 @@ We store all of our data in Redis, which is great for text-based queries. To dis
 - Computing the similarity 
 
 ## Business Value
-Words move people. Take job descriptions. The hiring process is expensive and time consuming. Similar to abstracts, a job description is the first front between a company and a potential hire. Unless you're Google or Facebook, connecting to the right person and succinctly communicating your company's job opening, mission, and values is crucial for any company's success. As the world grows, so does the amount of data. Velma is your pipeline for collecting and processing that data in real-time and at scale. 
+Words move people. Say your company is hiring and posts a job description to LinkedIn. Similar to abstracts, a job description is typically the first front between a company and a potential hire. There's a lot of jobs and a lot of people out there, so it's important for your company to communicate its job opening, mission, and values succinctly -- all of which are aimed to connect you to the right person for the job. The role of the abstract for researchers is no different. We could all gain from being a little clearer. 
 
-Velma is for academics, but choosing the right words is for everyone. 
+As the world continues to grow, so will the amount of data in it. You'll want examples of what works, and Velma is your a real-time data collection and processing pipeline to help you do just that. 
+
+Velma is made for academics, but choosing the right words is for everyone. 
 
 ## MVP
 Move the Open Research Corpus and arXiv to S3, join the two datasets, map the abstracts to their citations, years and field, store this information in Redis, compute the Jiccard Index for the top 10,000 abstracts by citation (< 0.0002%) from computer science from the last 5 years, display from that subset the top 10 abstracts with the highest Jiccard Index on Flask. 
