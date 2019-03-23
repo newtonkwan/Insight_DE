@@ -5,35 +5,39 @@ Words move people.
 ## Motivation 
 The right words make all the difference. Your paper's abstract or summary is the gateway to your work; it likely the single largest deciding factor in whether a reader will continue to read your paper. 
 
-Velma is a text-based similarity pipeline for 45 million academic research papers that provides the best example of abstracts based on: 
+Velma is a pipeline for 45 million academic research papers that provides the best example of abstracts based on: 
 
 1) Number of citations 
 2) Year 
 3) Similarity to abstracts from other top papers in your field 
 
-We believe in learning by example. Velma will provide you with real abstracts from top papers so you can learn from the best. If you've convinced your reader to continue past the abstract, our work is done and yours is just getting started. 
+We believe in learning by example. Velma will provide you with real abstracts from top papers so you can learn from the best. If you've convinced your reader to continue past the abstract, our work is done and yours is just starting.  
 
 ## Project description 
-Velma is a data pipeline with batch processing and real-time streaming capabilities. 
+We use a lot of papers. Papers are collected from the Open Research Corpus and arXiv (~45 million, ~250 GB) from three main categories -- CS, neuroscience, biomedical -- and stored in AWS S3. The data sets are joined, abstracts are connected to their year and number of citations, and then sorted -- all using Spark. We consider a good paper one that has a high number of citations within its field. 
 
-Papers are collected from the Open Research Corpus and arXiv (~45 million, ~250 GB) and stored in AWS S3. The data sets are joined, abstracts are connected to their year and number of citations, and the abstracts are sorted -- all using Spark. 
+Most top papers have good abstracts. However, some papers are good in spite of bad abstracts. We want to provide abstract formats that are tried and true. Velma will take the top 10,000 papers from the last 5 years and compare them to one another through the Jiccard Index, providing a measure word choice similarity. 
 
-For the top 150,000 papers (3 categories, 1% of each), I will then compare each abstract to each of the others [O(n!)] through the Levenshtein distance by domain. The distance value describes the minimal number of deletions, insertions, or substitutions that are required to transform one string (the source) into another (the target). 
+![Alt text](./jaccard_index.png)
+$$ \text{Jiccard Index} = \frac{\text{the # of words shared by two abstracts}}{\text{the # of words in the union of the two abstracts}}$$ 
 
-Ex. Levenshtein distance of "test" to "text" is 1 (one substitution). 
+Use the right words with confidence. Velma will provide abstracts using the common language of your field, so you can be confident in the words you use. 
 
-This calculation provides information on the similarity of abstracts. If the abstracts are similar, abstracts could be a good indicator of number of citations. If they're not very similar, then a) maybe abstracts aren't a good indicator for citations; b) the domains of the papers are not similar enough; c) the similarity algorithm is not good enough. 
+Staying up to date is also important. That's why Velma supports streaming. When new research papers are released (~2 million are published a year according to the NSF), Velma uses Kafka and Spark Streaming to process the new papers. Updates are made to arXiv monthly. 
 
-When new research papers come in, I will use Kafka and Spark Streaming (not completely necessary for this project since arXiv only updates monthly, but will be crucial for companies that get new data daily or instantly) 
+We store all of our data in Redis, which is great for text-based queries. Finally, we use Flask to display Velma's top abstracts on a simple web interface. 
+
+
 
 ## Tech Stack
-![Tech Stack](workflow.jpeg)
+
+![Alt text](./workflow.jpeg)
 - AWS S3 [Storing Open Research Corpus and arXiv data]
-- Kafka [Ingesting data from Open Research Corps; arXiv already in S3]
-- Spark [Batch Processing on historic data]
+- Spark [Batch Processing on data already stored in S3]
+- Kafka [Ingesting new data from Open Research Corps; arXiv already in S3]
 - Spark Streaming [Stream Processing on new data]
-- Redis (or ElasticSearch) [Database; good for storing and searching text data]
-- Flask [Web; seems like the simplest to use]
+- Redis [Database; good for storing and searching text data]
+- Flask [Web interface]
 
 ## Data Source
 - Open Research Corpus: CS, Neuroscience, Biomedical [46GB] [direct download] [.txt files] 
@@ -46,30 +50,25 @@ When new research papers come in, I will use Kafka and Spark Streaming (not comp
 - Computing the similarity 
 
 ## Business Value
-There are many use cases. For example, Textio is a Seattle company focused on augmented writing for job descriptions. New job postings are put up every day on Indeed, LinkedIn, Glassdoor, etc. How do you write a good job description so that you have a higher probability of getting good talent? I have created a pipeline that can take historic data and do real time streaming on these postings. The pipeline will allow data scientists and ML engineers to easily access the data and test their models on what job descriptions work well and ultimately provide insight into how a company would write a good job postings. Other use cases include ingesting text-based data like real-time Yelp reviews, traffic updates, and news articles for a wide range of purposes. 
+Words move people. Take job descriptions. The hiring process is expensive and time consuming. Similar to abstracts, a job description is the first front between a company and a potential hire. Unless you're Google or Facebook, connecting to the right person and succinctly communicating your company's job opening, mission, and values is crucial for any company's success. As the world grows, so does the amount of data. Velma is your pipeline for collecting and processing that data in real-time and at scale. 
+
+Velma is for academics, but choosing the right words is for everyone. 
 
 ## MVP
-Join the two datasets together, extract the top 5,000 abstracts (< 0.01%) along with their citations, and compute the Levenshtein distances. 
+Move the Open Research Corpus and arXiv to S3, join the two datasets, map the abstracts to their citations, years and field, store this information in Redis, compute the Jiccard Index for the top 10,000 abstracts by citation (< 0.0002%) from computer science from the last 5 years, display from that subset the top 10 abstracts with the highest Jiccard Index on Flask. 
 
 ## Stretch Goals
-- Add more research papers
-- Categorize research papers by domain (Ex. CS, Biomedical, Neuroscience)
-- Categorize research papers by year (Ex. 1987, 1999, 2018)
-- Validate and implement a more sophisticated similarity system [Jaccard index, Sorensen-Dice, Ratcliff-Obershelp similarity]
-- Display top abstracts by domain
-- Compute similarity by domain
+- Add more research papers from other data sources [Ask Neil]
+- Validate and implement a weighted graph system that 
 - Scale the number of abstracts that can be compared efficiently 
 
 
 ## Appendix 
+#### Other sorting algorithms 
 - Jaccard index: the size of the intersection divided by the size of the union of two label sets
 - Sorensen-Dice: Find the common tokens, and divide it by the total number of tokens present by combining both sets
 - Ratcliff-Obershelp similarity: Find the longest common substring from the two strings. Remove that part from both strings, and split at the same location. This breaks the strings into two parts, one left and another to the right of the found common substring. Now take the left part of both strings and call the function again to find the longest common substring. Do this too for the right part. This process is repeated recursively until the size of any broken part is less than a default value. Finally, a formulation similar to the above-mentioned dice is followed to compute the similarity score. The score is twice the number of characters found in common divided by the total number of characters in the two strings. 
 
 ## Credits
 Tech Stack Picture: kellielu; Appendix info: "String similarity — the basic know your algorithms guide!" by Mohit Mayank, itnext. Feb. 2, 2019.
-
-
-
-
 
