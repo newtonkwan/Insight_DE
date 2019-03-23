@@ -1,9 +1,12 @@
 # Velma 
 
+@(Insight Data Engineering)
+
+
 Words move people. 
 
 ## Motivation 
-The right words make all the difference. Your paper's abstract or summary is the gateway to your work; it likely the single largest deciding factor in whether a reader will continue to read your paper. 
+The right words make all the difference. Your paper's abstract or summary is the gateway to your work; it likely the single largest deciding factor in whether a reader will continue to read your paper. We believe in learning by example. 
 
 Velma is a pipeline for 45 million academic research papers that provides the best example of abstracts based on: 
 
@@ -11,22 +14,18 @@ Velma is a pipeline for 45 million academic research papers that provides the be
 2) Year 
 3) Similarity to abstracts from other top papers in your field 
 
-We believe in learning by example. If you've convinced your reader to continue past the abstract, our work is done and yours is just getting started.  
+If you've convinced your reader to continue past the abstract, our work is done and yours is just starting.  
 
 ## Project description 
 We use a lot of papers. Papers are collected from the Open Research Corpus and arXiv (~45 million, ~250 GB) from three main categories -- CS, neuroscience, biomedical -- and stored in AWS S3. The data sets are joined, abstracts are connected to their year and number of citations, and then sorted -- all using Spark. We consider a good paper one that has a high number of citations within its field. 
 
-Most top papers have good abstracts. However, some papers are good in spite of bad abstracts. We want to provide abstract formats that are tried and true. Velma will take the top 10,000 papers from the last 5 years and compare them to one another through the Jiccard Index, providing a measure word choice similarity. 
+Most top papers have good abstracts. However, some papers are good in spite of bad abstracts. We want to provide abstract formats that are tried and true. Velma will take the top 10,000 papers from the last 5 years and compare them to one another through the Jiccard Index, providing a measure of word choice similarity. Velma will provide abstracts using the common language of your field, so you can be confident that you're using the right words.  
 
 ![Alt text](./jaccard_index.png)
 
-Use the right words with confidence. Velma will provide abstracts using the common language of your field, so you can be confident in the words you use. 
+Staying up to date is also important. It's estimated that around ~2 million new papers are published each year according to the NSF. That's why Velma supports streaming. Every month, when arXiv updates its collection of papers, Velma ingests and processes these new papers using Kafka and Spark Streaming. 
 
-Staying up to date is also important. That's why Velma supports streaming. When new research papers are released (~2 million are published a year according to the NSF), Velma uses Kafka and Spark Streaming to process the new papers. Updates are made to arXiv monthly. 
-
-We store all of our data in Redis, which is great for text-based queries. Finally, we use Flask to display Velma's top abstracts on a simple web interface. 
-
-
+We store all of our data in Redis, which is great for text-based queries. To display Velma's top abstracts,  we use Flask as a simple web interfacing tool. 
 
 ## Tech Stack
 
