@@ -23,7 +23,7 @@ Most top papers have good abstracts. However, some papers are good in spite of b
 
 ![Alt text](./jaccard_index.png)
 
-Staying up to date is also important. It's estimated that around ~2 million new papers are published each year according to the NSF. That's why Velma supports streaming. Every month, when arXiv updates its collection of papers, Velma ingests and processes these new papers using Kafka and Spark Streaming. 
+Staying up to date is also important. According to the NSF, it's estimated that around ~2 million new papers are published each year. That's why Velma supports streaming. Every month, when arXiv updates its collection of papers, Velma ingests and processes these new papers using Kafka and Spark Streaming. 
 
 We store all of our data in Redis, which is great for text-based queries. To display Velma's top abstracts,  we use Flask as a simple web interfacing tool. 
 
