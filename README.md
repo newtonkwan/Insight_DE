@@ -1,8 +1,5 @@
 # Velma 
 
-@(Insight Data Engineering)
-
-
 Words move people. 
 
 ## Motivation 
