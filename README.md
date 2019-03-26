@@ -26,7 +26,7 @@ We store all of our data in Redis, which is great for text-based queries. To dis
 
 ## Tech Stack
 
-![Alt text](./Tech_Stack.png)
+![Alt text](./tech_stack_v3.png)
 
 ## Data Source
 - Open Research Corpus: CS, Neuroscience, Biomedical [46GB] [direct download] [.txt files] 
