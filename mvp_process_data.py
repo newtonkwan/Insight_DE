@@ -4,7 +4,7 @@ from pyspark import SparkContext
 This file pulls 1GB .gz file of data from an S3 bucket
 '''
 
-rdb = redis.Redis(host="10.0.0.12", port=6379) # set up the redis database connection 
+rdb = redis.Redis(host="10.0.0.6", port=6379) # set up the redis database connection 
 
 filenames = "s3a://open-research-corpus/sample-S2-records.gz" # path to the example file from S3 file 
 sc = SparkContext(appName = "Pull Open Research Corpus") # setup the Spark Context 
@@ -51,6 +51,9 @@ for line in data.take(len_of_data):
     
     if id_tag not in paper_mappings:
     	paper_mappings[id_tag] = (year_tag, num_citations, abstract_tag)
+
+for key in list(paper_mappings.keys()):
+    rdb.set(key, paper_mappings[key][2]) # set the key to abstract 
 
 
 
