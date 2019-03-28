@@ -25,10 +25,10 @@ for line in data.take(len_of_data):
 	line = line.encode('utf8') # encodes the unicode to ascii 
 
 	# look for the labels "id", "year", "inCitations", and "paperAbstract"
-    id_label_start = line.find(paper_id_tag) # this is the index that the id label starts
-    year_label_start = line.find(paper_year_tag) # index that the year label starts 
-    citation_label_start = line.find(paper_citation_tag) # index that the citation label starts 
-    abstract_label_start = line.find(paper_abstract_tag) # index that the abstrat label starts 
+	id_label_start = line.find(paper_id_tag) # this is the index that the id label starts
+	year_label_start = line.find(paper_year_tag) # index that the year label starts 
+	citation_label_start = line.find(paper_citation_tag) # index that the citation label starts 
+	abstract_label_start = line.find(paper_abstract_tag) # index that the abstrat label starts 
     
     # look for the tag of each label 
     id_tag_start = id_label_start + 6 # this is the index that the id tag starts. Always be 6. 
@@ -49,8 +49,8 @@ for line in data.take(len_of_data):
     num_citations = len(citation_list) # number of citations 
     abstract_tag = line[abstract_tag_start:abstract_tag_end] # abstract tag string 
     
-    if id_tag not in paper_mappings: 
-        paper_mappings[id_tag] = (year_tag, num_citations, abstract_tag)
+    if id_tag not in paper_mappings:
+    	paper_mappings[id_tag] = (year_tag, num_citations, abstract_tag)
 
 
 
