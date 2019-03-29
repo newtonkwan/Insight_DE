@@ -29,14 +29,30 @@ We store all of our data in Redis, which is great for text-based queries. To dis
 ![Alt text](./tech_stack_v3.png)
 
 ## Data Source
-- Open Research Corpus: CS, Neuroscience, Biomedical [46GB] [direct download] [.txt files] 
-- arXiv [190GB] [Amazon S3] [source files in TeX/LaTeX]
+- Open Research Corpus: CS, Neuroscience, Biomedical [46GB] [direct download] [.txt files]
+
+## Features 
+### General
+No user interaction required. Velma will look at the top 20% (by citation) of research papers available, compute the jaccard index on these top 20% papers, and display the 5 papers with the highest jaccard index. 
+
+### AUTOMATIC UPDATES
+Whenever the corpus updates, pull in the new data automatically and add it to the database. 
+
+### MORE OR LESS 
+The user will enter the title of a paper and Velma will provide 5 abstracts that are most like it. For example, the user enters "Mastering the Game of Go without Human Knowledge". Velma will search through the database for that paper. If it exists in the database, Velma will compute the jaccard index of the abstract to all other papers in the database, then display the name and abstracts of the top 5 abstracts that are most similar to it. 
+
+### KEYWORD
+The user will enter a keyword(s) that they want in their abstract. For example, the user inputs = "deep learning". Velma will scan through the database, pull every abstract with the keyword "deep learing", sort them by highest citation, take the top 20% of these papers, compute the jaccard index, and display the 5 papers with the highest jaccard index.  
+
+### TAGGED 
+A user will enter a tag(s) and Velma will provide the top 5 abstracts with those tags. For example, the user inputs the tag = "biomedical". Velma will look through only the abstracts with the tag = "biomedical", compute the jaccard index for the top 20% of papers and display the top 5. 
+
+### YEAR BY YEAR
+Allows the user to filter by year. Ex. only look at the papers from 2015-2019. 
 
 ## Engineering Challenge
-- Combining two or more large data sets (>50 GB)
 - Extracting the abstract and number of citations from each paper
-- Streaming data when new papers come in [updated monthly in ArXiv]
-- Computing the similarity 
+- Batching monthly when new papers come in
 
 ## Business Value
 Words move people. Say your company is hiring and posts a job description to LinkedIn. Similar to abstracts, a job description is typically the first front between a company and a potential hire. There's a lot of jobs and a lot of people out there, so it's important for your company to communicate its job opening, mission, and values succinctly -- all of which are aimed to connect you to the right person for the job. The role of the abstract for researchers is no different. We could all gain from being a little clearer. 
@@ -45,22 +61,18 @@ As the world continues to grow, so will the amount of data in it. You'll want ex
 
 Velma is made for academics, but choosing the right words is for everyone. 
 
-## MVP
-Move the Open Research Corpus and arXiv to S3, join the two datasets, map the abstracts to their citations, years and field, store this information in Redis, compute the Jiccard Index for the top 10,000 abstracts by citation (< 0.0002%) from computer science from the last 5 years, display from that subset the top 10 abstracts with the highest Jiccard Index on Flask. 
 
 ## Stretch Goals
 - Add more research papers from other data sources [Ask Neil]
-- Validate and implement a weighted graph system that 
 - Scale the number of abstracts that can be compared efficiently 
 
 
 ## Appendix 
 #### Other sorting algorithms 
-- Jaccard index: the size of the intersection divided by the size of the union of two label sets
 - Sorensen-Dice: Find the common tokens, and divide it by the total number of tokens present by combining both sets
 - Ratcliff-Obershelp similarity: Find the longest common substring from the two strings. Remove that part from both strings, and split at the same location. This breaks the strings into two parts, one left and another to the right of the found common substring. Now take the left part of both strings and call the function again to find the longest common substring. Do this too for the right part. This process is repeated recursively until the size of any broken part is less than a default value. Finally, a formulation similar to the above-mentioned dice is followed to compute the similarity score. The score is twice the number of characters found in common divided by the total number of characters in the two strings. 
 
 ## Credits 
-Special thanks to Sriram, Curtis, Hoa, the rest of Insight Data Science. 
+Thank you to all the fellows in 19B for your help, without which this project would not have been possible. Special thanks to Sriram, Curtis, Hoa, and the rest of Insight Data Science staff. 
 
 
