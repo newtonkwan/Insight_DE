@@ -1,7 +1,7 @@
 ----------------------------------------------------------------
-Tue Apr 02 17:57:06 UTC 2019:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0169-df32-8d68-00000b9de308 
-on database directory /home/ubuntu/velma2.5/metastore_db with class loader org.apache.spark.sql.hive.client.IsolatedClientLoader$$anon$1@2b6988a0 
+Tue Apr 02 19:23:44 UTC 2019:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0169-df81-ded6-00000c71bc40 
+on database directory /home/ubuntu/velma2.5/metastore_db with class loader org.apache.spark.sql.hive.client.IsolatedClientLoader$$anon$1@4652347c 
 Loaded from file:/usr/local/spark/jars/derby-10.12.1.1.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_191-8u191-b12-2ubuntu0.16.04.1-b12
