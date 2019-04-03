@@ -6,6 +6,7 @@ Velma: Insight Data Engineering
 This file preprocesses text files and stores them back into AWS S3 
 '''
 import redis
+import boto3
 from pyspark.sql.types import *
 from pyspark.sql.functions import udf
 from pyspark.sql import SQLContext
@@ -15,10 +16,24 @@ from pyspark.sql.session import SparkSession
  
 sc = SparkContext.getOrCreate()
 spark = SparkSession(sc)
-bucket_name = "open-research-corpus"
+orig_bucket_name = "open-research-corpus"
+preprocessed_bucket_name = "preprocessed-open-research-corpus"
+
+def write_aws_s3(preprocessed_bucket_name, filename, df):
+    '''
+    This function writes a dataframe to the preprocessed bucket: preprocessed-open-research-corpus
+    '''
+    df.write.save("s3a://{0}/{1}".format(preprocessed_bucket_name, filename), format="json", mode="overwrite")
+
+def get_bucket(bucket_name):
+    s3 = boto3.resource('s3')
+    return s3.Bucket(bucket_name)
 
 def read_all_gz_from_bucket(bucket_name):
-    return spark.read.text("s3a://{0}/corpus-2019-01-31/*.gz".format(bucket_name))
+    return spark.read.text("s3a://{0}/corpus-2019-01-31/s2-corpus-01.gz".format(bucket_name))
+
+def read_single_gz_from_bucket(bucket_name, file_name):
+    return spark.read.text("s3a://{0}/{1}".format(bucket_name, file_name))
 
 def get_id(line):
     '''
@@ -74,10 +89,26 @@ get_abstract_udf = udf(lambda line: get_abstract(line), StringType())
 
 # this is one of the raw data files (1GB) 
 #filenames = "s3a://open-research-corpus/corpus-2019-01-31/s2-corpus-00.gz"
-raw_data = read_all_gz_from_bucket(bucket_name)
-#raw_data = spark.read.text(filenames)
-raw_and_ids = adding_ids(raw_data)
-raw_ids_abstracts = adding_abstracts(raw_and_ids)
+
+# raw data pulled from original S3 bucket 
+#raw_data = read_all_gz_from_bucket(orig_bucket_name)
+
+# raw data + ids dataframe 
+#raw_and_ids = adding_ids(raw_data)
+
+# raw data + ids + abstracts dataframe 
+#raw_ids_abstracts = adding_abstracts(raw_and_ids)
+
+# write to aws s3 into a new bucket 
+#write_aws_s3(preprocessed_bucket_name, filename, raw_ids_abstracts)
+
+bucket = get_bucket("open-research-corpus")
+for gz_obj in bucket.objects.filter(Prefix="corpus"):
+    raw_data = read_single_gz_from_bucket(orig_bucket_name, gz_obj.key)
+    raw_and_ids = adding_ids(raw_data)
+    raw_ids_abstracts = adding_abstracts(raw_and_ids)
+    write_aws_s3(preprocessed_bucket_name, gz_obj.key, raw_ids_abstracts)
+
 
 print("Schema for raw data + ids + abstracts")
 print("-------------------------------------")
@@ -89,6 +120,6 @@ print("----------------------------")
 results.show()
 print()
 print()
-print("Number of rows!", results.count())
+#print("Number of rows!", results.count())
 print()
 print() 
