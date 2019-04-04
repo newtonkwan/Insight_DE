@@ -39,13 +39,50 @@ def get_title(line):
     return title_tag
 
 def get_abstract(line):
-    parenthesis = "\"" # string literal for "
+    '''
+    this function looks for the abstract tag of the paper
+    '''
     paper_abstract_tag = "\"paperAbstract\""
-    abstract_label_start = line.find(paper_abstract_tag) # index that the abstrat label starts 
+    parenthesis = "\"" # string literal for "
+    
+    abstract_label_start = line.find(paper_abstract_tag) # index that the abstrat label starts
     abstract_tag_start = abstract_label_start + 17 # the start of the abstract tag 
-    abstract_tag_end = line.find(parenthesis, abstract_tag_start) # the end of the abstract tag
-    abstract_tag = line[abstract_tag_start:abstract_tag_end] # abstract tag string 
+    abstract_tag_end = line.find(parenthesis, abstract_tag_start) # the end of the abstract tag 
+    abstract_tag = line[abstract_tag_start:abstract_tag_end] # abstract tag string
+    if r"\n" in abstract_tag:
+        abstract_tag = abstract_tag.replace(r"\n", " ")
     return abstract_tag
+
+def get_citation(line):
+    '''
+    Get the citation from the values 
+    '''
+    paper_citation_tag = "\"inCitations\"" # find the occurence of "inCitations"
+    bracket = r"]" # look for "]"
+    
+    citation_label_start = line.find(paper_citation_tag) # index that the citation label starts  
+    citation_tag_start = citation_label_start + 15 # index that the citation tag starts
+    citation_tag_end = line.find(bracket, citation_tag_start)  # this is the index that the citation tag ends 
+    if citation_tag_start == citation_tag_end: # if there are no citations: 
+        num_citations = 0
+        citation_list = []
+    else:
+        citation_list = line[citation_tag_start:citation_tag_end].split(",") # make it a list, count number of entries
+        num_citations = len(citation_list) # number of citations 
+    return num_citations
+
+def get_tag(line):
+    '''
+    Extracts the tag from the value column in the dataframe 
+    '''
+    paper_entities_tag = "\"entities\""
+    bracket = r"]" # look for "]"
+    
+    entities_label_start = line.find(paper_entities_tag) # index for the title label start 
+    entities_tag_start = entities_label_start + 12
+    entities_tag_end = line.find(bracket+",\"", entities_tag_start) 
+    entities_tag = line[entities_tag_start:entities_tag_end]
+    return entities_tag 
 
 def adding_ids(df):
     '''
@@ -63,10 +100,10 @@ def adding_titles(df):
     '''
     This function takes the raw data dataframe and adds on an id column for the data
     Ex: 
-    value        id 
-    laeinaelk    23402939423
-    lakeflake    02398402384
-    ieifniena    23402938402
+    value        id             title 
+    laeinaelk    23402939423    "Mastering the game of Go"
+    lakeflake    02398402384    "Computer Science is fun!"
+    ieifniena    23402938402    "Who knows what to do????"
     '''
     add_titles = df.withColumn("title", get_title_udf(df.value))
     return add_titles
@@ -75,22 +112,46 @@ def adding_abstracts(df):
     '''
     This function takes the raw + id dataframe and adds on abstracts column for the data
     Ex
-    value        id             abstracts
-    laeinaelk    23402939423    Mastering the game of ...
-    lakeflake    02398402384    When people go outside...
-    ieifniena    23402938402    Data engineers love to...
+    value        id             title                         abstracts 
+    laeinaelk    23402939423    "Mastering the game of Go"    Mastering the game of ...
+    lakeflake    02398402384    "Computer Science is fun!"    When people go outside...
+    ieifniena    23402938402    "Who knows what to do????"    Data engineers love to...
     '''
     add_abstracts = df.withColumn("abstracts", get_abstract_udf(df.value))
     return add_abstracts
+
+def adding_citations(df):
+    '''
+    This function takes the raw data dataframe and adds on a citation column for the data
+    Ex
+    value        id             title                         abstracts                  citations
+    laeinaelk    23402939423    "Mastering the game of Go"    Mastering the game of ...  18
+    lakeflake    02398402384    "Computer Science is fun!"    When people go outside...  2
+    ieifniena    23402938402    "Who knows what to do????"    Data engineers love to...  102
+     '''
+    add_citations = df.withColumn("citations", get_citation_udf(df.value))
+    return add_citations
+
+def adding_tags(df):
+    '''
+    This function takes the raw data dataframe and adds on a citation column for the data
+    Ex
+    value        id             title                         abstracts                  citations   tags
+    laeinaelk    23402939423    "Mastering the game of Go"    Mastering the game of ...  18          "CS", "Game"
+    lakeflake    02398402384    "Computer Science is fun!"    When people go outside...  2           "World", "Tree"
+    ieifniena    23402938402    "Who knows what to do????"    Data engineers love to...  102         "DE", "Spark"
+     '''
+    add_tags = df.withColumn("tags", get_tag_udf(df.value))
+    return add_tags 
 
 def drop_values(df):
     '''
     This function takes the dataframe and drops the value column
     Ex
-    id             abstracts
-    23402939423    Mastering the game of ...
-    02398402384    When people go outside...
-    23402938402    Data engineers love to...
+    id             title                         abstracts                  citations   tags
+    23402939423    "Mastering the game of Go"    Mastering the game of ...  18          "CS", "Game"
+    02398402384    "Computer Science is fun!"    When people go outside...  2           "World", "Tree"
+    23402938402    "Who knows what to do????"    Data engineers love to...  102         "DE", "Spark"
     '''
     return df.drop(df.value)
 
@@ -98,29 +159,24 @@ def drop_values(df):
 get_id_udf = udf(lambda line: get_id(line), StringType())
 get_abstract_udf = udf(lambda line: get_abstract(line), StringType())
 get_title_udf = udf(lambda line: get_title(line), StringType())
+get_citation_udf = udf(lambda line:get_citation(line), StringType())
+get_tag_udf = udf(lambda line:get_tag(line), StringType())
 
-# read in the raw data file 
+# raw data filenames 
 filenames = "s3a://open-research-corpus/sample-S2-records.gz" # path to the example file from S3 file 
 #filenames = "s3a://open-research-corpus/corpus-2019-01-31/s2-corpus-00.gz"
+
+# intial read in
 df = spark.read.text(filenames)
-#raw_and_ids = adding_ids(raw_data)
-#raw_ids_abstracts = adding_abstracts(raw_and_ids)
-#ids_abstracts = drop_values(raw_ids_abstracts)
 df = adding_ids(df)
 df = adding_titles(df)
 df = adding_abstracts(df)
+df = adding_citations(df)
+df = adding_tags(df)
 df = drop_values(df)
  
-print("Schema for raw data + ids + abstracts")
+print("Schema for filtered data")
 print("-------------------------------------")
-#raw_ids_abstracts.createOrReplaceTempView("raw_ids_and_abstracts")
-#raw_ids_abstracts.printSchema()
-#results = spark.sql("SELECT * FROM raw_ids_and_abstracts")
-#print("First 5 entries for add_ids_abstracts data")
-#ids_abstracts.createOrReplaceTempView("ids_and_abstracts")
-#ids_abstracts.printSchema()
-#results = spark.sql("SELECT * FROM ids_and_abstracts")
-#print("Entries for ids_and_abstracts")
 df.createOrReplaceTempView("filtered_df")
 df.printSchema()
 results = spark.sql("SELECT * FROM filtered_df")
