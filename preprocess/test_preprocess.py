@@ -7,7 +7,6 @@ from pyspark.sql import SQLContext
 from pyspark import SparkContext
 from pyspark.sql.session import SparkSession
 
-
 sc = SparkContext.getOrCreate()
 spark = SparkSession(sc)
 
@@ -29,6 +28,7 @@ def get_title(line):
     title_tag_start = title_label_start + 9
     title_tag_end = line.find(parenthesis+",\"", title_tag_start) 
     title_tag = line[title_tag_start:title_tag_end]
+    '''
     if title_tag[-1] == ".":
         title_tag = title_tag.replace(".", "")
     if title_tag[-1] == "]":
@@ -36,6 +36,7 @@ def get_title(line):
         title_tag = title_tag.replace("[", "")
     if "\\\"" in title_tag:
         title_tag = title_tag.replace("\\\"", "\"")
+    '''
     return title_tag
 
 def get_abstract(line):
@@ -175,6 +176,8 @@ df = adding_citations(df)
 df = adding_tags(df)
 df = drop_values(df)
  
+df.write.parquet("s3a://preprocessed-open-research-corpus/sample.parquet",mode="overwrite")
+
 print("Schema for filtered data")
 print("-------------------------------------")
 df.createOrReplaceTempView("filtered_df")
@@ -182,9 +185,9 @@ df.printSchema()
 results = spark.sql("SELECT * FROM filtered_df")
 print("Entries for filtered_df")
 print("----------------------------")
-results.show()
+#results.show()
 print()
 print()
-print("Number of rows!", results.count())
+#print("Number of rows!", results.count())
 print()
 print()
