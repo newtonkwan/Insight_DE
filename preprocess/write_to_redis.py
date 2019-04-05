@@ -15,6 +15,7 @@ from pyspark.sql.functions import udf
 
 sc = SparkContext.getOrCreate()
 spark = SparkSession(sc)
+preprocessed_bucket_name = "preprocessed-open-research-corpus"
 
 def read_parquet_from_bucket(bucket_name):
     '''
@@ -30,8 +31,16 @@ def store_to_redis(line):
     This doesn't need to return anything, but spark requires it 
     '''
     rdb = redis.Redis(host="10.0.0.5", port="6379")
-    rdb.set(line['id'], line['abstracts'])
+    #rdb.set(line['id'], line['abstracts'])
+    rdb.lpush(line['id'],line['title'])
+    rdb.lpush(line['id'],line['abstracts'])
     return line
 
 q = df.rdd.map(store_to_redis) # dummy variable name to store to redis 
-q.count() # activation function 
+q.count() # activation function
+
+print("Schema for filtered data")
+print("-------------------------------------")
+df.createOrReplaceTempView("filtered_df")
+df.printSchema()
+ 
