@@ -45,8 +45,8 @@ def store_to_redis(line):
     rdb.lpush(line['id'],line['abstracts'])
     return line
 
-q = df.rdd.map(store_to_redis) # dummy variable name to store to redis 
-q.count() # activation function
+#q = df.rdd.map(store_to_redis) # dummy variable name to store to redis 
+#q.count() # activation function
 
 print("Schema for filtered data")
 print("-------------------------------------")
