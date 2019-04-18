@@ -9,7 +9,7 @@ Velma is a pipeline for 45 million research papers that provides examples of hig
 
 ## How does it work? 
 
-<a href="http://54.201.232.247/">Velma</a>
+<b href="http://54.201.232.247/">Velma</b>
 
 Say I'm a computer scientist writing a paper on reinforcement learning. I want to pull up a few examples of abstracts so I can have a sense of what works well. Say I know the abstract from "Mastering the game of Go without human knowledge" has a great abstract. I'll provide the title "Mastering the game of Go without human knowledge" to Velma, and Velma will provid me not only with the abstract from "Mastering the game of Go without human knowledge", it will also provide me with 5 additional abstracts that are similar to the abstract from "Mastering the game of Go without human knowledge". Now, I have not only one but six examples of good abstracts I can use as templates to write my own abstract. If you've convinced your reader to continue past the abstract, our work is done and yours is just starting.
 
