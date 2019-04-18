@@ -25,9 +25,6 @@ Velma will provide abstracts using the common language of your field, so you can
 
 ![Alt text](./pictures/Tech_Stack_v4.png)
 
-## Data Source
-- Open Research Corpus: CS, Neuroscience, Biomedical [125GB] [direct download] [.txt files]
-
 ## Main Features 
 
 ### Gimmie a title 
