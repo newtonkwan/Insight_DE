@@ -9,13 +9,13 @@ Velma is a pipeline for 45 million research papers that provides examples of hig
 
 ## How does it work? 
 
-Say I'm a computer scientist writing a paper on reinforcement learning. I want to pull up a few examples of abstracts so I can have a sense of what works well. Say I know the abstract from "Mastering the game of Go without human knowledge" has a great abstract. I'll provide the title "Mastering the game of Go without human knowledge" to Velma, and Velma will provid me not only with the abstract from "Mastering the game of Go without human knowledge", it will also provide me with 5 additional abstracts that are similar to the abstract from "Mastering the game of Go without human knowledge". Now, I have not only one but six examples of good abstracts I can use as templates to write my own abstract. If you've convinced your reader to continue past the abstract, our work is done and yours is just starting.
+Say I'm a computer scientist writing a paper on reinforcement learning. I want to pull up a few examples of abstracts so I can have a sense of what works well. Say I know the abstract from "Mastering the game of Go without human knowledge" has a great abstract. I'll provide the title "Mastering the game of Go without human knowledge" to Velma, and Velma will provide me not only with the abstract from "Mastering the game of Go without human knowledge", it will also provide me with 5 additional abstracts that are similar to the abstract from "Mastering the game of Go without human knowledge". Now, I have not one but six examples of good abstracts I can use as templates to write my own abstract. If you've convinced your reader to continue past the abstract, our work is done and yours is just starting.
 
 Click here to try <a href="http://54.201.232.247/">Velma</a>
 
 
 ## Under the hood
-We use a lot of papers. Papers are collected from the Open Research Corpus (~45 million) from three main categories -- CS, neuroscience, biomedical -- and are stored as raw text files in AWS S3. Then, the papers are preprocessed into a large dataframe, where each row is a paper and each column is a feature of that paper like id, title, abstract, number of citations, and tags. Spark is used because we want to distribute the work to multiple workers, saving time and solving out of memory issues. After data driven filtering by number of citations and relevant tags, Velma compares the simililarity of abstracts using the Jaccard Index, a measure of word choice similarity. For each abstract, we find the top 5 most similar abstracts and stores these as key value pairs in Redis because we need fast query speeds. Redis is perfect for this because of its key-value based store and constant time access. To display Velma's abstracts, we use Flask as a because of its template based development, allowing for a wide range of customization as well as "just working". 
+We use a lot of papers. Papers are collected from the Open Research Corpus (~45 million) from three main categories -- CS, neuroscience, biomedical -- and are stored as raw text files in AWS S3. Then, the papers are preprocessed into a large dataframe, where each row is a paper and each column is a feature of that paper like id, title, abstract, number of citations, and tags. Spark is used because we want to distribute the work to multiple workers, saving time and solving out of memory issues. After data driven filtering by number of citations and relevant tags, Velma compares the simililarity of abstracts using the Jaccard Index, a measure of word choice similarity. For each abstract, we find the top 5 most similar abstracts and store these as key value pairs. Redis is perfect for this because of its key-value based store and constant time access. To display Velma's abstracts, we use Flask as a because of its template based development, allowing for a wide range of customization as well as "just working". 
 
 
 Velma will provide abstracts using the common language of your field, so you can be confident that you're using the right words.
@@ -23,7 +23,7 @@ Velma will provide abstracts using the common language of your field, so you can
 
 ## Tech Stack
 
-![Alt text](./pictures/tech_stack_v3.png)
+![Alt text](./pictures/Tech_Stack_v4.png)
 
 ## Data Source
 - Open Research Corpus: CS, Neuroscience, Biomedical [125GB] [direct download] [.txt files]
