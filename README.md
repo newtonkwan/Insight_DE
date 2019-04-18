@@ -28,7 +28,7 @@ Velma will provide abstracts using the common language of your field, so you can
 ## Main Features 
 
 ### Gimmie a title 
-The user will enter the title of a paper and Velma will provide not only the abstract from that paper but 5 additional abstracts that are most similar to it. For example, the user enters "Mastering the game of Go without human knowledge". Velma will search through the database for that paper. If it exists in the database, Velma display 5 additional abstracts that are most similar to the abstract from "Mastering the game of Go without human knowledge". 
+Input the title of a paper and Velma will provide the abstract from that paper and 5 of the most similar abstracts to it. For example, the user enters the paper title "Mastering the game of Go without human knowledge". Velma will then search through the database for that paper. If the paper exists in the database, Velma will display the 5 most similar abstracts to the abstract from "Mastering the game of Go without human knowledge". 
 
 ## Engineering Challenge
 Comparing the jaccard index of each paper to every other paper is O(n^2). With 45,000,000 research papers, this task is impossible -- on the order of 2 quadrillion computations. (That's a 2 followed by 15 zeros!) So what next? Taking a closer look at the data, we determined three filters that not only reduced the number of computations but also increased the quality of the abstracts 
@@ -42,7 +42,7 @@ Comparing the jaccard index of each paper to every other paper is O(n^2). With 4
 ### Tags 
 - You don't want to waste your time comparing papers about gene splicing to papers to database architecture. For this reason, we only compare papers that share at least one tag. This way, only papers that are relevant to each other will be compared to each other. 
 
-With these three filters, we are able to reduce our computation by 9 orders of magnitude from 2 quadrillion to 60 million computations, distributed across 4 Spark workers. We were not only able to reduce our computation time by a significant amount, we were also able to provide higher quality abstracts to our user. Everyone is happy! 
+With these three filters, we are able to reduce our computation by **9 orders of magnitude** from 2 quadrillion to 90 million computations, distributed across 4 Spark workers. We were not only able to reduce our computation time by a significant amount, we were also able to provide higher quality abstracts to our user. Everyone is happy! 
 
 
 ## What's in the works?
