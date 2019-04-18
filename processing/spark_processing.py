@@ -17,7 +17,7 @@ import nltk
 from nltk.stem import PorterStemmer
 import redis 
 
-conf = (SparkConf().set("spark.driver.maxResultSize", "32g").set("spark.sql.autoBroadcastJoinThreshold", "-1"))
+conf = (SparkConf().set("spark.driver.maxResultSize", "32g"))
 
 # Create new context
 #sc = SparkContext(conf=conf)
@@ -44,22 +44,6 @@ def stemming(list_abstract):
         stem_sentence.append(PorterStemmer().stem(word))
     return stem_sentence
 
-def filter_join_jaccard(df):
-    '''
-    does a cartesian product, and returns the new df
-    '''
-    df = df.drop(df.citations)
-    df1 = df.alias("df1")
-    df2 = df.alias("df2")
-    df1_r = df1.select(*(col(x).alias(x + '_df1') for x in df1.columns))
-    df2_r = df1.select(*(col(x).alias(x + '_df2') for x in df2.columns))
-    outer_join_df = df1_r.join(df2_r, df1_r.title_df1 != df2_r.title_df2, how='outer')
-
-    # allows me to access all columns and put jaccard index as a new column 
-    joined_jaccard_df = outer_join_df.withColumn("jaccard", jaccard_index_udf(struct([outer_join_df[x] for x in outer_join_df.columns])))
-    
-    return joined_jaccard_df
-
 def add_jaccard(df):
     df = df.withColumn("jaccard", jaccard_index_udf(struct([df[x] for x in df.columns])))
     return df 
@@ -78,15 +62,15 @@ def jaccard_index(line):
     token_abst_2 = tokenizer(abstract_2) # this is a list of tokens from abstract 2
     
     # stem the words 
-    stemmed_abst_1 = stemming(token_abst_1) # this is list of stemmed tokens from abstract 1 
-    stemmed_abst_2 =  stemming(token_abst_2) # this is a list of stemmed tokens from abstract 2 
+    stemmed_abst_1 = set(stemming(token_abst_1)) # this is set of stemmed tokens from abstract 1 
+    stemmed_abst_2 =  set(stemming(token_abst_2)) # this is a set of stemmed tokens from abstract 2 
 
     # count number of words in each list 
-    words_in_abst_1 = len(token_abst_1)# number of words in abstract 1
-    words_in_abst_2 = len(token_abst_2) # number of words in abstract 2 
+    #words_in_abst_1 = len(token_abst_1)# number of words in abstract 1
+    #words_in_abst_2 = len(token_abst_2) # number of words in abstract 2 
 
     # combines the two lists and takes the set to get total number of unique words 
-    combined_set = set(stemmed_abst_1 + stemmed_abst_2)
+    combined_set = stemmed_abst_1.union(stemmed_abst_2)
     
     # Find the length of the set 
     words_in_combined_set = len(combined_set) # number of words in combined set
@@ -111,14 +95,11 @@ def outer_join(df):
     '''
     does an outer join
     '''
-    #df = df.drop(df.citations)
-    #df = df.drop(df.abstracts)
-    #df = df.drop(df.id)
     df1 = df.alias("df1")
     df2 = df.alias("df2")
-    df1_r = df1.select(*(col(x).alias(x + '_df1') for x in df1.columns))
-    df2_r = df1.select(*(col(x).alias(x + '_df2') for x in df2.columns))
-    cond = [df1_r.title_df1 != df2_r.title_df2, df2_r.citations_df2 > 10000]
+    df1_r = df1.select(*(col(x).alias(x + '_df1') for x in df1.columns if x in ['id','abstracts','tags', 'citations']))
+    df2_r = df2.select(*(col(x).alias(x + '_df2') for x in df2.columns if x in ['id','abstracts','tags', 'citations']))
+    cond = [df1_r.id_df1 != df2_r.id_df2, df2_r.citations_df2 > 25]
     outer_join_df = df1_r.join(df2_r, cond, how='left')
     outer_join_df = outer_join_df.withColumn("Keep", check_tag_udf(struct([outer_join_df[x] for x in outer_join_df.columns])))
     outer_join_df = outer_join_df.filter(col('Keep') == True)
@@ -149,6 +130,10 @@ def drop_unneeded_part_1(df):
     '''
     df = df.drop(df.tags_df1)
     df = df.drop(df.tags_df2)
+    df = df.drop(df.citations_df1)
+    df = df.drop(df.citations_df2)
+    df = df.drop(df.abstracts_df1)
+    df = df.drop(df.abstracts_df2)
     df = df.drop(df.Keep)
     
     return df
@@ -159,9 +144,6 @@ def drop_unneeded_part_2(df):
     '''
     df = df.drop(df.jaccard)
     df = df.drop(df.rank)
-    df = df.drop(df.id_df1)
-    df = df.drop(df.id_df2)
-    df = df.drop(df.citations_df1)
     return df
 
 def store_in_s3(df, filename):
@@ -199,21 +181,14 @@ df = read_from_s3()
 #q = df.rdd.map(store_to_redis_part_1) # dummy variable name to store to redis 
 #q.count() # activation function
 df = outer_join(df)
-print("Schema for filtered data")
-print("-------------------------------------")
-df.createOrReplaceTempView("filtered_df")
-df.printSchema()
-results = spark.sql("SELECT * FROM filtered_df")
-print("Entries for filtered_df")
-print("----------------------------")
-results.show()
+df = add_jaccard(df)
+df = drop_unneeded_part_1(df)
+window = Window.partitionBy(df['id_df1']).orderBy(df['jaccard'].desc())
+df = df.select('*', rank().over(window).alias('rank')).filter(col('rank') <= 5)
+df = drop_unneeded_part_2(df).repartition("id_df1")
 #print("Num of rows", df.count())
-#df = add_jaccard(df)
-#df = drop_unneeded_part_1(df)
-#window = Window.partitionBy(df['title_df1']).orderBy(df['jaccard'].desc())
-#df = df.select('*', rank().over(window).alias('rank')).filter(col('rank') <= 5)
-#df = drop_unneeded_part_2(df).repartition("title_df1")
 #store_in_s3(df, filename)
+df.foreachPartition(store_to_redis_part_2)
 #q = df.rdd.map(store_to_redis_part_2) # dummy variable name to store to redis 
 #q.count() # activation function
 
