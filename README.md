@@ -45,7 +45,7 @@ Comparing the jaccard index of each paper to every other paper is O(n^2). With 4
 With these three filters, we are able to reduce our computation by 9 orders of magnitude from 2 quadrillion to 60 million computations, distributed across 4 Spark workers. We were not only able to reduce our computation time by a significant amount, we were also able to provide higher quality abstracts to our user. Everyone is happy! 
 
 
-## In the works! 
+## What's in the works?
 
 ### Keyword
 The user will enter a keyword(s) that they want in their abstract. For example, the user inputs = "deep learning". Velma will scan through the database, pull every abstract with the keyword "deep learing", sort them by highest citation, take the top 20% of these papers, compute the jaccard index, and display the 5 papers with the highest jaccard index.  
