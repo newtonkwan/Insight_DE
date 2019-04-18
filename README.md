@@ -5,9 +5,11 @@ Words move people.
 ## Motivation 
 Think about the last time you read a job description. This is the first front between you and the rest of the company. The analagous for researchers is the paper abstract. Like a company, researchers want to connect to people through their work. Unfortunately, most people don't get past the paper abstract. So the question is: how do we write abstracts that are not only concise and compelling, but also connects us to the right person? This is what I built Velma for. 
 
-Velma is a pipeline for 45 million academic research papers that provides examples of high quality abstracts from top papers in Computer Science, Neuroscience, and Biomedical. 
+Velma is a pipeline for 45 million research papers that provides examples of high quality abstracts from top papers in Computer Science, Neuroscience, and Biomedical. 
 
 ## How does it work? 
+
+<a href="http://54.201.232.247/">Velma</a>
 
 Say I'm a computer scientist writing a paper on reinforcement learning. I want to pull up a few examples of abstracts so I can have a sense of what works well. Say I know the abstract from "Mastering the game of Go without human knowledge" has a great abstract. I'll provide the title "Mastering the game of Go without human knowledge" to Velma, and Velma will provid me not only with the abstract from "Mastering the game of Go without human knowledge", it will also provide me with 5 additional abstracts that are similar to the abstract from "Mastering the game of Go without human knowledge". Now, I have not only one but six examples of good abstracts I can use as templates to write my own abstract. If you've convinced your reader to continue past the abstract, our work is done and yours is just starting.
 
