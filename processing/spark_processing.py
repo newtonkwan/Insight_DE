@@ -99,7 +99,7 @@ def outer_join(df):
     df2 = df.alias("df2")
     df1_r = df1.select(*(col(x).alias(x + '_df1') for x in df1.columns if x in ['id','abstracts','tags', 'citations']))
     df2_r = df2.select(*(col(x).alias(x + '_df2') for x in df2.columns if x in ['id','abstracts','tags', 'citations']))
-    cond = [df1_r.id_df1 != df2_r.id_df2, df2_r.citations_df2 > 25]
+    cond = [df1_r.id_df1 != df2_r.id_df2, df2_r.citations_df2 > 50]
     outer_join_df = df1_r.join(df2_r, cond, how='left')
     outer_join_df = outer_join_df.withColumn("Keep", check_tag_udf(struct([outer_join_df[x] for x in outer_join_df.columns])))
     outer_join_df = outer_join_df.filter(col('Keep') == True)
@@ -188,9 +188,9 @@ df = df.select('*', rank().over(window).alias('rank')).filter(col('rank') <= 5)
 df = drop_unneeded_part_2(df).repartition("id_df1")
 #print("Num of rows", df.count())
 #store_in_s3(df, filename)
-df.foreachPartition(store_to_redis_part_2)
-#q = df.rdd.map(store_to_redis_part_2) # dummy variable name to store to redis 
-#q.count() # activation function
+#df.foreachPartition(store_to_redis_part_2)
+q = df.rdd.map(store_to_redis_part_2) # dummy variable name to store to redis 
+q.count() # activation function
 
 
 

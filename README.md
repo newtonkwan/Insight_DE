@@ -40,36 +40,32 @@ Comparing the jaccard index of each paper to every other paper is O(n^2). With 4
 - Only about 13% of papers have more than 10 citations. Since we're in the business of top papers and its much more likely that a user will give Velma a high quality paper, we decide to only store these top papers in our database. 
 
 ### Tags 
-- You don't want to waste your time comparing papers about gene splicing to papers to database architecture. For this reason, we only compare papers that share at least one tag. This way, only papers that are relevant to each other will compared to each other. 
+- You don't want to waste your time comparing papers about gene splicing to papers to database architecture. For this reason, we only compare papers that share at least one tag. This way, only papers that are relevant to each other will be compared to each other. 
 
 With these three filters, we are able to reduce our computation by 9 orders of magnitude from 2 quadrillion to 60 million computations, distributed across 4 Spark workers. We were not only able to reduce our computation time by a significant amount, we were also able to provide higher quality abstracts to our user. Everyone is happy! 
 
 
 ## In the works! 
 
-### Next Steps 
-
-#### Keyword
+### Keyword
 The user will enter a keyword(s) that they want in their abstract. For example, the user inputs = "deep learning". Velma will scan through the database, pull every abstract with the keyword "deep learing", sort them by highest citation, take the top 20% of these papers, compute the jaccard index, and display the 5 papers with the highest jaccard index.  
 
-#### Tagged  
+### Tagged  
 A user will enter a tag(s) and Velma will provide the top 5 abstracts with those tags. For example, the user inputs the tag = "biomedical". Velma will look through only the abstracts with the tag = "biomedical", compute the jaccard index for the top 20% of papers and display the top 5. 
 
-#### Year by year 
+### Year by year 
 Allows the user to filter by year. Ex. only look at the papers from 2015-2019. 
 
-#### Adding papers
+### Adding papers
 There are potentially millions of other papers from other domains on sites like arXiv, Academia, and PubMed (> 200GB)
 
-### Long term vision 
-
-#### Adding other categories
+### Adding other categories
 Expanding Velma’s service to other summary type writings like job descriptions, executive summaries, and intros to articles. 
 
-#### Weighted Graphing
+### Weighted Graphing
 There are many other features to a paper that indicate quality papers and possibly good abstracts. What if you could weight the suggestions by author, out citations, or title? 
 
-#### Augmented writing
+### Augmented writing
 Provide examples and learn how to recommend good words and style for people. What if Velma could recommend ways to write your abstract, intro paragraph, or executive summary while keeping your distinct voice? 
 
 
