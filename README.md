@@ -48,10 +48,10 @@ With these three filters, we are able to reduce our computation by **9 orders of
 ## What's in the works?
 
 ### Keyword
-The user will enter a keyword(s) that they want in their abstract. For example, the user inputs = "deep learning". Velma will scan through the database, pull every abstract with the keyword "deep learing", sort them by highest citation, take the top 20% of these papers, compute the jaccard index, and display the 5 papers with the highest jaccard index.  
+The user will enter a keyword(s) that they want in their abstract. For example, the user inputs = "deep learning". Velma will scan through the database, pull every abstract with the keyword "deep learning", sort them by highest citation, take the top 20% of these papers, compute the jaccard index, and display the 5 papers with the highest jaccard index.  
 
 ### Tagged  
-A user will enter a tag(s) and Velma will provide the top 5 abstracts with those tags. For example, the user inputs the tag = "biomedical". Velma will look through only the abstracts with the tag = "biomedical", compute the jaccard index for the top 20% of papers and display the top 5. 
+A user will enter a tag(s) and Velma will provide the top 5 abstracts with those tags. For example, the user inputs the tag "biomedical". Velma will look through only the abstracts with the tag "biomedical", compute the jaccard index for the top 20% of papers and display the top 5. 
 
 ### Year by year 
 Allows the user to filter by year. Ex. only look at the papers from 2015-2019. 
@@ -63,13 +63,13 @@ There are potentially millions of other papers from other domains on sites like 
 Expanding Velma’s service to other summary type writings like job descriptions, executive summaries, and intros to articles. 
 
 ### Weighted Graphing
-There are many other features to a paper that indicate quality papers and possibly good abstracts. What if you could weight the suggestions by author, out citations, or title? 
+There are many other features to a paper that indicate quality papers and possibly good abstracts. Velma would like to be able to weigh your abstracts suggestions by author, out citations, and title. 
 
 ### Augmented writing
-Provide examples and learn how to recommend good words and style for people. What if Velma could recommend ways to write your abstract, intro paragraph, or executive summary while keeping your distinct voice? 
+Provide examples and learn how to recommend good words and style for people. Velma could recommend ways to write your abstract, intro paragraph, or executive summary while keeping your distinct voice. 
 
 
 ## Credits 
-I big thank you to Insight and the DE SEA 19A Fellows for your help and constant feedback, without which this project would not have been possible. Special thanks to Sriram, Curtis, Hoa, and the rest of Insight Data Science staff. 
+A big thank you to Insight and the DE SEA 19A Fellows for your help and constant feedback, without which this project would not have been possible. Special thanks to Sriram, Curtis, Hoa, and the rest of Insight Data Science staff. 
 
 
