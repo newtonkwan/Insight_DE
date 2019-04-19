@@ -8,7 +8,7 @@ This creates a dataframe with jaccard index comparison
 import pyspark
 from pyspark.sql.window import Window
 from pyspark.sql.types import *
-from pyspark.sql.functions import udf, struct, col, rank
+from pyspark.sql.functions import udf, struct, col, rank, broadcast, size
 from pyspark.sql import SQLContext
 from pyspark import SparkContext, SparkConf
 from pyspark.sql.session import SparkSession
@@ -97,32 +97,13 @@ def outer_join(df):
     '''
     df1 = df.alias("df1")
     df2 = df.alias("df2")
+    df2 = df2.filter(df2.citations > 50)
     df1_r = df1.select(*(col(x).alias(x + '_df1') for x in df1.columns if x in ['id','abstracts','tags', 'citations']))
     df2_r = df2.select(*(col(x).alias(x + '_df2') for x in df2.columns if x in ['id','abstracts','tags', 'citations']))
-    cond = [df1_r.id_df1 != df2_r.id_df2, df2_r.citations_df2 > 50]
+    cond = [df1_r.id_df1 != df2_r.id_df2, df2_r.tags_df2.isin(df1_r.tags_df1)]
     outer_join_df = df1_r.join(df2_r, cond, how='left')
-    outer_join_df = outer_join_df.withColumn("Keep", check_tag_udf(struct([outer_join_df[x] for x in outer_join_df.columns])))
-    outer_join_df = outer_join_df.filter(col('Keep') == True)
+    outer_join_df = outer_join_df.filter(outer_join_df.id_df2.isNotNull())
     return outer_join_df
-
-def check_sets(line):
-    '''
-    Checks the set membership of the source tags and target tags and return True if 
-    a tag in the source set also appears in the target set
-    '''
-    
-    in_set = False # initialiaze this to False 
-    tag_source_set = set(line.tags_df1) # creates a set ouf of the tag list from tags_df1
-    tag_target_set = set(line.tags_df2) # creates a set out of the tag list from tags_df2    
-    
-    # check if a word in source set is a member of target set 
-    for word in tag_source_set:
-        if word in tag_target_set:
-            in_set = True 
-    
-    return in_set
-
-check_tag_udf = udf(lambda line: check_sets(line), BooleanType())
 
 def drop_unneeded_part_1(df):
     '''
@@ -134,7 +115,6 @@ def drop_unneeded_part_1(df):
     df = df.drop(df.citations_df2)
     df = df.drop(df.abstracts_df1)
     df = df.drop(df.abstracts_df2)
-    df = df.drop(df.Keep)
     
     return df
 
@@ -153,6 +133,10 @@ def store_in_s3(df, filename):
     df.write.save("s3a://preprocessed-open-research-corpus/{0}".format(filename), format="parquet", mode="append")
     
     return 1
+
+def drop_empty_tags(df):
+    df_filtered = df.filter(size(df.tags) > 1)
+    return df_filtered
 
 def store_to_redis_part_1(line):
     '''
@@ -175,22 +159,52 @@ def store_to_redis_part_2(line):
     rdb.lpush(line['id_df1'],line['id_df2'])
     return 1
 
+def get_tag(line):
+    '''
+    Extracts the tag from the value column in the dataframe 
+    '''
+    entities_tag = line.split(",")
+    return entities_tag
+
+def convert_tags(df):
+    '''
+    This function takes the raw data dataframe and adds on a citation column for the data
+    Ex
+    value        id             title                         abstracts                  citations   tags
+    laeinaelk    23402939423    "Mastering the game of Go"    Mastering the game of ...  18          "CS", "Game"
+    lakeflake    02398402384    "Computer Science is fun!"    When people go outside...  2           "World", "Tree"
+    ieifniena    23402938402    "Who knows what to do????"    Data engineers love to...  102         "DE", "Spark"
+     '''
+    add_tags = df.withColumn("tags", get_tag_udf(df.tags))
+    return add_tags 
+
+get_tag_udf = udf(lambda line:get_tag(line), ArrayType(StringType()))
+
+
 filename = "outer_joined_filtered"
 df = read_from_s3()
+df = convert_tags(df)
+df = drop_empty_tags(df)
+df = df.filter(df.citations > 5000)
 #print("Number of rows", df.count())
 #q = df.rdd.map(store_to_redis_part_1) # dummy variable name to store to redis 
 #q.count() # activation function
+
 df = outer_join(df)
+#df = outer_join(df).repartition("id_df1")
+#store_in_s3(df, filename)
+print("Number of rows", df.count())
+'''
 df = add_jaccard(df)
 df = drop_unneeded_part_1(df)
 window = Window.partitionBy(df['id_df1']).orderBy(df['jaccard'].desc())
 df = df.select('*', rank().over(window).alias('rank')).filter(col('rank') <= 5)
-df = drop_unneeded_part_2(df).repartition("id_df1")
+#df = drop_unneeded_part_2(df).repartition("id_df1")
+df = drop_unneeded_part_2(df)
 #print("Num of rows", df.count())
-#store_in_s3(df, filename)
-#df.foreachPartition(store_to_redis_part_2)
 q = df.rdd.map(store_to_redis_part_2) # dummy variable name to store to redis 
 q.count() # activation function
+'''
 
 
 
