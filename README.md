@@ -45,7 +45,7 @@ With these three filters, we are able to reduce our computation by **9 orders of
 ### Titles
 Input the title of a paper and Velma will provide the abstract from that paper and 5 of the most similar abstracts to it. For example, the user enters the paper title "Mastering the game of Go without human knowledge". Velma will then search through the database for that paper. If the paper exists in the database, Velma will display the 5 most similar abstracts to the abstract from "Mastering the game of Go without human knowledge". 
 
-## What's in the works?
+## Upcoming Features
 
 ### Keyword
 The user will enter a keyword(s) that they want in their abstract. For example, the user inputs = "deep learning". Velma will scan through the database, pull every abstract with the keyword "deep learning", sort them by highest citation, take the top 20% of these papers, compute the jaccard index, and display the 5 papers with the highest jaccard index.  
