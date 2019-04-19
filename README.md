@@ -13,17 +13,15 @@ Say I'm a computer scientist writing a paper on reinforcement learning. I want t
 
 Click here to try <a href="http://54.201.232.247/">Velma</a>
 
+## Tech Stack
+
+![Alt text](./pictures/Tech_Stack_v4.png)
 
 ## Under the hood
 We use a lot of papers. Papers are collected from the Open Research Corpus (~45 million) from three main categories -- Computer Science, Neuroscience, and Biomedical -- and are stored as raw text files in AWS S3. Then, the papers are preprocessed into a large dataframe, where each row is a paper and each column is a feature of that paper like id, title, abstract, number of citations, and tags. Spark is used because we want to distribute the work to multiple workers, saving time and solving out of memory issues. After data driven filtering by number of citations and relevant tags, Velma compares the simililarity of abstracts using the Jaccard Index, a measure of word choice similarity. For each abstract, we find the top 5 most similar abstracts and store these as key value pairs. Redis is perfect for this because of its key-value based store and constant time access. To display Velma's abstracts, we use Flask because of its template based development, allowing for a wide range of customization as well as "just working". 
 
 
 Velma will provide abstracts using the common language of your field, so you can be confident that you're using the right words.
-
-
-## Tech Stack
-
-![Alt text](./pictures/Tech_Stack_v4.png)
 
 
 ## Engineering Challenge
