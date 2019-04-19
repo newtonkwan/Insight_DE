@@ -163,7 +163,7 @@ def store_to_redis_part_1(line):
     rdb.set(line['title'], line['id'])
     rdb.lpush(line['id'],line['title'])
     rdb.lpush(line['id'],line['abstracts'])
-    return line
+    return 1
 
 def store_to_redis_part_2(line):
     '''
@@ -173,7 +173,7 @@ def store_to_redis_part_2(line):
     #rdb = redis.Redis(host="10.0.0.5", port="6379")
     rdb = redis.Redis(host="10.0.0.5", port="6379")
     rdb.lpush(line['id_df1'],line['id_df2'])
-    return line
+    return 1
 
 filename = "outer_joined_filtered"
 df = read_from_s3()
