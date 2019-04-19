@@ -31,7 +31,7 @@ Velma will provide abstracts using the common language of your field, so you can
 Input the title of a paper and Velma will provide the abstract from that paper and 5 of the most similar abstracts to it. For example, the user enters the paper title "Mastering the game of Go without human knowledge". Velma will then search through the database for that paper. If the paper exists in the database, Velma will display the 5 most similar abstracts to the abstract from "Mastering the game of Go without human knowledge". 
 
 ## Engineering Challenge
-Comparing the jaccard index of each paper to every other paper is O(n^2). With 45,000,000 research papers, this task is impossible -- on the order of 2 quadrillion computations. (That's a 2 followed by 15 zeros!) So what next? Taking a closer look at the data, we determined three filters that not only reduced the number of computations but also increased the quality of the abstracts 
+**9 orders of magnitude** Comparing the jaccard index of each paper to every other paper is O(n^2). With 45,000,000 research papers, this task is impossible -- on the order of 2 quadrillion computations. (That's a 2 followed by 15 zeros!) So what next? Taking a closer look at the data, we determined three filters that not only reduced the number of computations but also increased the quality of the abstracts 
 
 ### Abstracts 
 - The data isn't very clean. Roughly 35% of papers from the data did not contain abstracts. So we drop them. 

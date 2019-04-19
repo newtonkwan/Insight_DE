@@ -185,10 +185,13 @@ filename = "outer_joined_filtered"
 df = read_from_s3()
 df = convert_tags(df)
 df = drop_empty_tags(df)
-df = df.filter(df.citations > 5000)
-#print("Number of rows", df.count())
+df = df.filter(df.citations > 1000)
+print("Number of rows", df.count())
 #q = df.rdd.map(store_to_redis_part_1) # dummy variable name to store to redis 
 #q.count() # activation function
+
+
+
 
 df = outer_join(df)
 #df = outer_join(df).repartition("id_df1")
@@ -201,11 +204,10 @@ window = Window.partitionBy(df['id_df1']).orderBy(df['jaccard'].desc())
 df = df.select('*', rank().over(window).alias('rank')).filter(col('rank') <= 5)
 #df = drop_unneeded_part_2(df).repartition("id_df1")
 df = drop_unneeded_part_2(df)
-#print("Num of rows", df.count())
-q = df.rdd.map(store_to_redis_part_2) # dummy variable name to store to redis 
-q.count() # activation function
+print("Num of rows", df.count())
+#q = df.rdd.map(store_to_redis_part_2) # dummy variable name to store to redis 
+#q.count() # activation function
 '''
-
 
 
 
