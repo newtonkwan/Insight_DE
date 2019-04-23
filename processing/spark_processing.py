@@ -84,11 +84,11 @@ def jaccard_index(line):
     
     return jaccard_index 
 
-def read_from_s3():
+def read_from_s3(filename):
     '''
     This function reads a parquet file from an S3 bucket 
     '''
-    df = spark.read.load("s3a://preprocessed-open-research-corpus/filtered-dataframes/part-*")
+    df = spark.read.load("s3a://preprocessed-open-research-corpus/{0}/part-*".format(filename))
     return df
 
 def outer_join(df):
@@ -97,13 +97,32 @@ def outer_join(df):
     '''
     df1 = df.alias("df1")
     df2 = df.alias("df2")
-    df2 = df2.filter(df2.citations > 50)
+    df2 = df2.filter(df2.citations > 200)
     df1_r = df1.select(*(col(x).alias(x + '_df1') for x in df1.columns if x in ['id','abstracts','tags', 'citations']))
     df2_r = df2.select(*(col(x).alias(x + '_df2') for x in df2.columns if x in ['id','abstracts','tags', 'citations']))
-    cond = [df1_r.id_df1 != df2_r.id_df2, df2_r.tags_df2.isin(df1_r.tags_df1)]
+    cond = [df1_r.id_df1 != df2_r.id_df2]
     outer_join_df = df1_r.join(df2_r, cond, how='left')
     outer_join_df = outer_join_df.filter(outer_join_df.id_df2.isNotNull())
+    outer_join_df = outer_join_df.withColumn("Keep", check_tag_udf(struct([outer_join_df[x] for x in outer_join_df.columns])))
+    outer_join_df = outer_join_df.filter(col('Keep') == True)
     return outer_join_df
+
+def check_sets(line):
+    '''
+    Checks the set membership of the source tags and target tags and return True if 
+    a tag in the source set also appears in the target set
+    '''
+    
+    in_set = False # initialiaze this to False 
+    tag_source_set = set(line.tags_df1) # creates a set ouf of the tag list from tags_df1
+    tag_target_set = set(line.tags_df2) # creates a set out of the tag list from tags_df2    
+    
+    # check if a word in source set is a member of target set 
+    for word in tag_source_set:
+        if word in tag_target_set:
+            in_set = True 
+    
+    return in_set
 
 def drop_unneeded_part_1(df):
     '''
@@ -179,35 +198,82 @@ def convert_tags(df):
     return add_tags 
 
 get_tag_udf = udf(lambda line:get_tag(line), ArrayType(StringType()))
+check_tag_udf = udf(lambda line: check_sets(line), BooleanType())
 
-
-filename = "outer_joined_filtered"
-df = read_from_s3()
+'''
+#store_filename = "jaccard_filtered"
+filtered_df_filename = "filtered-dataframes"
+final_outer_joined_filename = "final_outer_joined"
+final_jaccard_filename = "final_jaccard"
+df = read_from_s3(filtered_df_filename)
 df = convert_tags(df)
 df = drop_empty_tags(df)
-df = df.filter(df.citations > 1000)
-print("Number of rows", df.count())
+df = df.filter(df.citations > 200)
+print("Number of rows for filtered > 200", df.count())
 #q = df.rdd.map(store_to_redis_part_1) # dummy variable name to store to redis 
 #q.count() # activation function
-
-
-
-
 df = outer_join(df)
+store_in_s3(df, final_outer_joined_filename)
+
 #df = outer_join(df).repartition("id_df1")
-#store_in_s3(df, filename)
-print("Number of rows", df.count())
-'''
+print("Number of rows for outer join", df.count())
+#df = read_from_s3(outer_joined_filename)
+#print("Number of rows!", df.count())
 df = add_jaccard(df)
 df = drop_unneeded_part_1(df)
 window = Window.partitionBy(df['id_df1']).orderBy(df['jaccard'].desc())
 df = df.select('*', rank().over(window).alias('rank')).filter(col('rank') <= 5)
 #df = drop_unneeded_part_2(df).repartition("id_df1")
 df = drop_unneeded_part_2(df)
-print("Num of rows", df.count())
+store_in_s3(df, final_jaccard_filename)
+print("Num of rows for complete jaccard", df.count())
+
+'''
+'''
 #q = df.rdd.map(store_to_redis_part_2) # dummy variable name to store to redis 
 #q.count() # activation function
 '''
+
+# read in the jaccard filtered dataframe
+#testing_outer_joined_filename = "testing_outer_joined"
+#filtered_df_filename = "filtered-dataframes"
+final_final_jaccard_filename = "final_final_jaccard_df"
+final_final_outer_joined_filename = "final_final_outer_joined_df"
+new_filtered_df_filename = "new_filtered_df"
+#df = read_from_s3(filtered_df_filename)
+#df = convert_tags(df)
+#df = drop_empty_tags(df)
+#df = df.filter(~ df.abstracts.like('%Your use of the JSTOR archive%'))
+#store_in_s3(df, new_filtered_df_filename)
+#print("Number of rows in new filtered df", df.count())
+#df = read_from_s3(new_filtered_df_filename)
+#df = df.filter(df.citations > 200)
+#print("Number of rows for outer join", df.count())
+#df = outer_join(df)
+#store_in_s3(df, final_final_outer_joined_filename)
+df = read_from_s3(final_final_outer_joined_filename)
+#print("Number of rows in new outer joined ", df.count())
+df = add_jaccard(df)
+df = drop_unneeded_part_1(df)
+window = Window.partitionBy(df['id_df1']).orderBy(df['jaccard'].desc())
+df = df.select('*', rank().over(window).alias('rank')).filter(col('rank') <= 5)
+#df = drop_unneeded_part_2(df).repartition("id_df1")
+#df = drop_unneeded_part_2(df)
+store_in_s3(df, final_final_jaccard_filename)
+print("Num of rows for complete jaccard", df.count())
+#store_in_s3(df, testing_outer_joined_filename)
+
+print("Schema for filtered data")
+print("-------------------------------------")
+df.createOrReplaceTempView("filtered_df")
+df.printSchema()
+results = spark.sql("SELECT * FROM filtered_df")
+print("Entries for filtered_df")
+print("----------------------------")
+results.show(10)
+#q = df.rdd.map(store_to_redis_part_2) # dummy variable name to store to redis 
+#q.count() # activation function
+
 
 
 
